@@ -2,19 +2,22 @@ package io.mosip.core.api.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.core.api.dao.ResidentBiometricsRepo;
 import io.mosip.core.api.dao.ResidentRepo;
 import io.mosip.core.api.dao.VINRepo;
 import io.mosip.core.api.model.Resident;
+import io.mosip.core.api.model.ResidentBiometrics;
 import io.mosip.core.api.response.AddressResponse;
+import io.mosip.core.api.response.BiometricsResponse;
 import io.mosip.core.api.response.UINReprintResponse;
 import io.mosip.core.api.response.VINGeneration;
 import io.mosip.core.api.response.VINRevoke;
@@ -22,12 +25,16 @@ import io.mosip.core.api.response.VINRevoke;
 @RestController
 @RequestMapping("/mosip/core/v1.0/api")
 public class APIController {
+
 	
 	@Autowired
 	VINRepo vinrepo;
 	
 	@Autowired
 	ResidentRepo residentrepo;
+	
+	@Autowired
+	ResidentBiometricsRepo residentbiometricsrepo;
 	
 	SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 	@RequestMapping("/test")
@@ -77,13 +84,23 @@ public class APIController {
 	
 	
 	@RequestMapping(value="/vin/revoke" ,method=RequestMethod.POST)
-	public VINRevoke revVINPOST(@RequestParam(value="vin", defaultValue="0") Long vin) {
-		if(vin==null||vin.longValue()<=0) {
-			return new VINRevoke("Failed","Invalid UIN",sdf.format(new Date(System.currentTimeMillis())));
+	public VINRevoke revVINPOST(@RequestParam(value="uin", defaultValue="0") String uin) {
+		if(uin==null||uin.equalsIgnoreCase("NA")) {
+			return new VINRevoke("Failed","Invalid vin",sdf.format(new Date(System.currentTimeMillis())));
 		}else {
-		return new VINRevoke("OK","VIN Revoked Successfully",sdf.format(new Date(System.currentTimeMillis())));
+			VINGeneration vingen = vinrepo.findById(uin).orElse(null);
+			if(vingen != null) {
+				vinrepo.deleteById(uin);
+			    return new VINRevoke("OK","VIN Revoked Successfully",sdf.format(new Date(System.currentTimeMillis())));
+			}
+			else {
+			    return new VINRevoke("Failed","No VIN Generated",sdf.format(new Date(System.currentTimeMillis())));
+
+			}
+			
 		}
 	}
+	
 	
 
 	@RequestMapping(value="/vin/revoke" ,method=RequestMethod.GET)
@@ -141,14 +158,24 @@ public class APIController {
 		}
 	}
 	
-	@RequestMapping(value="/uin/update" ,method=RequestMethod.POST)
+	@PutMapping(value="/uin/update")
 	public AddressResponse updateRequest(@RequestBody Resident resident) {
-		AddressResponse resp=validateData(resident);
-		if(resp.getStatus().equalsIgnoreCase("Failed"))return resp;
-		else {
-			residentrepo.save(resident);
-			return resp;
+		Resident res = residentrepo.findById(resident.getUin()).orElse(null);
+		System.out.println(res);
+		if(res != null) {	
+			AddressResponse resp=validateData(resident);
+			if(resp.getStatus().equalsIgnoreCase("Failed")) {
+				return resp;
+			}
+			else {
+				residentrepo.save(resident);
+				return resp;
+			}	
 		}
+		else {
+			return new AddressResponse(resident.getUin(),"Failed","UIN Not Exists",sdf.format(new Date(System.currentTimeMillis())));
+		}
+		
 		
 	}
 	//
@@ -176,6 +203,44 @@ public class APIController {
 			resp.setStatus("Success");
 		}
 		return resp;
+	}
+	
+	@RequestMapping(value="/uin/lockBiometrics" ,method=RequestMethod.GET)
+	public BiometricsResponse lockBiometrics(@RequestParam(value="uin", defaultValue="NA") String uin) {
+		if(uin==null||uin.equalsIgnoreCase("NA")) {
+			return new BiometricsResponse("Failed","Invalid UIN","No Status" ,sdf.format(new Date(System.currentTimeMillis())));
+		}
+		else {
+			ResidentBiometrics res = residentbiometricsrepo.findById(uin).orElse(null);
+			if(res.getBiometrics_status() != "locked") {	
+				res.setBiometrics_status("locked");
+				residentbiometricsrepo.save(res);
+				return new BiometricsResponse("OK", uin ,"Biometrics Locked", sdf.format(new Date(System.currentTimeMillis())));			
+			}
+			else {
+				return new BiometricsResponse("OK",uin ,"Already Locked" , sdf.format(new Date(System.currentTimeMillis())));			
+			}
+			
+		}
+	}
+	
+	@RequestMapping(value="/uin/unlockBiometrics" ,method=RequestMethod.GET)
+	public BiometricsResponse unlockBiometrics(@RequestParam(value="uin", defaultValue="NA") String uin) {
+		if(uin==null||uin.equalsIgnoreCase("NA")) {
+			return new BiometricsResponse("Failed","Invalid UIN","No Status" ,sdf.format(new Date(System.currentTimeMillis())));
+		}
+		else {
+			ResidentBiometrics res = residentbiometricsrepo.findById(uin).orElse(null);
+			if(res.getBiometrics_status() != "unlocked") {	
+				res.setBiometrics_status("unlocked");
+				residentbiometricsrepo.save(res);
+				return new BiometricsResponse("OK", uin ,"Biometrics Unlocked", sdf.format(new Date(System.currentTimeMillis())));			
+			}
+			else {
+				return new BiometricsResponse("OK",uin ,"Already Unlocked" , sdf.format(new Date(System.currentTimeMillis())));			
+			}
+			
+		}
 	}
 
 }

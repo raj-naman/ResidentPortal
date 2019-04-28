@@ -17,11 +17,12 @@ public class Resident {
 	private String dist;
 	private String state;
 	private String country;
+	public String mobile;
 	
 	public Resident() {}
 
 	public Resident(String uin, String name, String father_name, String dob, String house_no, String street,
-			String city, String dist, String state, String country) {
+			String city, String dist, String state, String country , String mobile) {
 		super();
 		this.uin = uin;
 		this.name = name;
@@ -33,6 +34,7 @@ public class Resident {
 		this.dist = dist;
 		this.state = state;
 		this.country = country;
+		this.mobile = mobile;
 	}
 
 	public String getUin() {
@@ -114,6 +116,16 @@ public class Resident {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	
+	
 	
 	
 
