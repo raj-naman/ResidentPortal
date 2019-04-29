@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: mosip-core-api
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: rishabh
+Implementation-Vendor-Id: io.mosip.core.api
+Build-Jdk: 1.8.0_201
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/mosip-core-api
+Created-By: Maven Integration for Eclipse
+
