@@ -376,6 +376,8 @@ public class APIController {
 //		
 //	}
 	
+	/*--------    Update Address   ----------*/
+	
 	@PostMapping(value="/uin/update" ,consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public AddressResponse updateRequest(Resident resident) {
 		Resident res = residentrepo.findById(resident.getUin()).orElse(null);
