@@ -20,52 +20,177 @@
         <li><a href="reprintUID.html"><span>Reprint UID card</span></a></li>
         <li><a href="generateVIN.html"><span>Generate VIN</span></a></li>
         <li><a href="revokeVIN.html"  class="current"><span>Revoke VIN</span></a></li>
-        <li><a href="lockUnlockBiometric.html"><span>Lock/Unlock Biometrics</span></a></li>
+        <li><a href="lockBiometrics.html"><span>Lock Biometrics</span></a></li>
+        <li><a href="unlockBiometrics.html"><span>Unock Biometrics</span></a></li>
         <li><a href="updateAddress.html"><span>Update Address</span></a></li>
       </ul>
     </div>
   </div>
   <div id="container">
-    <div id="sidebar">
-      <h3>Sidebar</h3>
-      <form action="#" method="post">
-        <fieldset>
-        <legend>Search</legend>
-        <div> <span>
-          <label for="txtsearch"> <img src="images/search.gif" alt="search" /> :search</label>
-          </span> <span>
-          <input type="text" value="demo only" name="txtsearch" title="Text input: search" id="txtsearch" size="25" />
-          </span> </div>
-        </fieldset>
-      </form>
-      <br><br>
-      <img src="images/logo.png" alt="" />
-  
-      
-    </div>
-    <div id="content">
-      <h3>Revoke <span style="color: #3484B1;"> VIN</span></h3>
-      
-      <form>
-  <div class="form-group">
-    <label for="exampleInputEmail1">Enter UIN</label>
-    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="UIDHelp" placeholder="Enter UIN">
-  </div>
- <button type="submit" class="btn btn-primary">Send OTP</button><br><br>
-   
-  <div class="form-group">
-    <label for="InputOTP">Password</label>
-    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Enter OTP" readonly>
-  </div>
- 
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form> 
-      
-    </div>
-  </div>
-  <br></br>
-  <div id="footer"> <a href="#">homepage</a> | <a href="mailto:rishabhs201195@gmail.com">contact</a> | &copy; 2019 Team 4 | Design by <a href="http://www.mitchinson.net"> www.mosip.org</a><br/>
-    This work is licensed under<a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Mosip </a> </div>
-</div>
+			<div id="sidebar">
+				<h3>Sidebar</h3>
+				<form action="#" method="post">
+					<fieldset>
+						<legend>Search</legend>
+						<div>
+							<span> <label for="txtsearch"> <img
+									src="images/search.gif" alt="search" /> :search
+							</label>
+							</span> <span> <input type="text" value="demo only"
+								name="txtsearch" title="Text input: search" id="txtsearch"
+								size="25" />
+							</span>
+						</div>
+					</fieldset>
+				</form>
+				<br><br> <img src="images/logo.png" alt="" />
+			</div>
+			<div id="content">
+				<h3>
+					Revoke <span style="color: #3484B1;"> VIN</span>
+				</h3>
+
+				<form id="VIN_FORM">
+					<div class="form-group">
+						<label for="exampleInputEmail1">Enter UIN</label> <input
+							type="text" class="form-control" id="uin_val" 
+							aria-describedby="UIDHelp" placeholder="Enter UIN">
+					</div>
+					<button type="submit" id="VIN_SUBMIT" class="btn btn-primary">Send OTP</button>
+					<br><br>
+				</form>
+				<form id="OTP_SUBMIT">
+					<div class="form-group">
+						<label for="InputOTP">Enter OTP</label> <input type="text"
+							class="form-control" id="InputOTP"
+							placeholder="Enter OTP">
+							<input type="hidden" name="sent_otp" id="sent_otp"></input>
+							<input type="hidden" name="hidden_uin" id="hidden_uin"></input>
+					</div>
+
+					<button type="submit" id="VIN_OTP_SUBMIT" class="btn btn-primary">Revoke VIN</button>
+				</form>
+					<div class="row">
+							<p id="result" style="color: red;"></p>
+						</div>
+			</div>
+		</div>
+		<br></br>
+		<div id="footer">
+			<a href="#">homepage</a> | <a href="mailto:rishabhs201195@gmail.com">contact</a>
+			| &copy; 2019 Team 4 | Design by <a href="https://www.mosip.io/">
+				www.mosip.org</a><br /> This work is licensed under<a rel="license"
+				href="https://www.mosip.io/">Mosip </a>
+		</div>
+	</div>
+	
+	<script>
+$(document).ready(function () {
+    $("#VIN_OTP_SUBMIT").prop("disabled", true);
+    $("#VIN_SUBMIT").click(function (event) {
+        //stop submit the form, we will post it manually.
+        event.preventDefault();
+        var uin = document.getElementById("VIN_FORM").elements.namedItem("uin_val").value;
+        var requestURL="http://localhost:51310//mosip/core/v1.0/api/generate/otp?uin="+uin;
+        // Get form
+       // var uin = $('#VIN_FORM')[0];
+        
+		// Create an FormData object 
+        //var data = new FormData(form);
+        console.log("VIN_SUBMIT Called :: uin "+uin);
+        console.log("Invoking URL :: "+requestURL);
+		// If you want to add an extra field for the FormData
+       // data.append("CustomField", "This is some extra data, testing");
+		// disabled the submit button
+        $("#VIN_SUBMIT").prop("disabled", true);
+        $.ajax({
+            type: "GET",
+           // enctype: 'application/json',
+            url: requestURL,
+            //data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+            	console.log("Response From API  :: data "+data);
+            	if(data.status==="OK"){
+            		  $("#result").text(data.message);
+                      console.log("SUCCESS : ", data.message+" vin "+data.vin);
+                      $("#VIN_SUBMIT").prop("disabled", false);
+                      document.forms['OTP_SUBMIT']['sent_otp'].value = data.vin;
+                      document.forms['OTP_SUBMIT']['hidden_uin'].value = uin;
+                      $("#VIN_OTP_SUBMIT").prop("disabled", false);
+                      
+            	}else{
+            		  $("#result").text(data.message);
+                      console.log("SUCCESS : ", data.message+" vin "+data.vin);
+                      $("#VIN_SUBMIT").prop("disabled", false);
+            	}
+              
+            },
+            error: function (e) {
+                $("#result").text(e.responseText);
+                console.log("ERROR : ", e);
+                $("#VIN_SUBMIT").prop("disabled", false);
+            }
+        });
+    });
+});
+</script>
+	
+	<script>
+$(document).ready(function () {
+    $("#VIN_OTP_SUBMIT").click(function (event) {
+        //stop submit the form, we will post it manually.
+        event.preventDefault();
+        var ip_otp = document.getElementById("OTP_SUBMIT").elements.namedItem("InputOTP").value;
+        var sent_otp = document.getElementById("OTP_SUBMIT").elements.namedItem("sent_otp").value;
+        var h_uin = document.getElementById("OTP_SUBMIT").elements.namedItem("hidden_uin").value;
+        var requestURL="http://localhost:51310//mosip/core/v1.0/api/vin/revoke/do?uin="+h_uin+"&sentOTP="+sent_otp+"&enterOTP="+ip_otp;
+        // Get form
+       // var uin = $('#VIN_FORM')[0];
+        
+		// Create an FormData object  
+        //var data = new FormData(form);
+        console.log("VIN_OTP_SUBMIT Called :: uin "+h_uin+" sent_otp "+sent_otp+" ip_otp "+ip_otp);
+        console.log("Invoking URL :: "+requestURL);
+		// If you want to add an extra field for the FormData
+       // data.append("CustomField", "This is some extra data, testing");
+		// disabled the submit button
+        $("#VIN_OTP_SUBMIT").prop("disabled", true);
+        $.ajax({
+            type: "GET",
+           // enctype: 'application/json',
+            url: requestURL,
+            //data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+            	console.log("Response From API  :: data "+data);
+            	if(data.status==="OK"){
+            		  $("#result").text(data.message);
+                      console.log("SUCCESS : ", data.message+" vin "+data.vin);
+                      $("#VIN_OTP_SUBMIT").prop("disabled", false);
+                      
+            	}else{
+            		  $("#result").text(data.message);
+                      console.log("SUCCESS : ", data.message+" vin "+data.vin);
+                      $("#VIN_OTP_SUBMIT").prop("disabled", false);
+            	}
+              
+            },
+            error: function (e) {
+                $("#result").text(e.responseText);
+                console.log("ERROR : ", e);
+                $("#VIN_OTP_SUBMIT").prop("disabled", false);
+            }
+        });
+    });
+});
+</script>
+	
 </body>
 </html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body id="body">
+<div id="wrap">
+  <div id="masthead">
+    <h1>Resident Portal</h1>
+    <h2><a href="#">MosipHome</a> | <a href="#">Contact</a> </h2>
+  </div>
+  <div id="menucontainer">
+    <div id="menunav">
+      <ul>
+        <li><a href="reprintUID.html" ><span>Reprint UID card</span></a></li>
+        <li><a href="generateVIN.html"><span>Generate VIN</span></a></li>
+        <li><a href="revokeVIN.html"><span>Revoke VIN</span></a></li>
+        <li><a href="lockBiometrics.html" ><span>Lock Biometrics</span></a></li>
+        <li><a href="unlockBiometrics.html"><span>Unock Biometrics</span></a></li>
+        <li><a href="updateAddress.html" class="current"><span>Update Address</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="container">
+     <div>
+				<h3>
+					Update <span style="color: #3484B1;"> Address Form</span>
+				</h3>
+		<form id="UPDATE_FORM" action="http://localhost:51310/mosip/core/v1.0/api/uin/update" method="post">
+		  <div class="form-row">
+		    <div class="form-group col-md-4">
+		      <label for="inputEmail4">UIN</label>
+		      <input type="text" class="form-control" id="uin" name= "uin" readonly>
+		    </div>
+		    <div class="form-group col-md-4">
+		      <label for="inputPassword4">Name</label>
+		      <input type="text" class="form-control" id="name" name = "name" readonly>
+		    </div>
+		    <div class="form-group col-md-4">
+		      <label for="inputEmail4">Father Name</label>
+		      <input type="text" class="form-control" id="father_name" name= "father_name" readonly>
+		    </div>
+		  </div>
+		  
+		  <div class="form-row">
+		    <div class="form-group col-md-4">
+		      <label for="inputPassword4">DOB</label>
+		      <input type="text" class="form-control" id="dob" name = "dob" readonly>
+		    </div>
+		    <div class="form-group col-md-4">
+		      <label for="inputEmail4">House No.</label>
+		      <input type="text" class="form-control" id="house_no" name= "house_no">
+		    </div>
+		    <div class="form-group col-md-4">
+		      <label for="inputPassword4">Street</label>
+		      <input type="text" class="form-control" id="street" name = "street">
+		    </div>
+		  </div>
+		  
+		  <div class="form-row">
+		    <div class="form-group col-md-4">
+		      <label for="inputPassword4">City</label>
+		      <input type="text" class="form-control" id="city" name = "city">
+		    </div>
+		    <div class="form-group col-md-4">
+		      <label for="inputEmail4">District</label>
+		      <input type="text" class="form-control" id="dist" name= "dist">
+		    </div>
+		    <div class="form-group col-md-4">
+		      <label for="inputPassword4">State</label>
+		      <input type="text" class="form-control" id="state" name = "state" >
+		    </div>
+		   </div>
+		   
+		   <div class="form-row">
+		   <div class="form-group col-md-4">
+		      <label for="inputPassword4">Country</label>
+		      <input type="text" class="form-control" id="country" name = "country" readonly>
+		    </div>
+		    <div class="form-group col-md-4">
+		      <label for="inputEmail4">Mobile No.</label>
+		      <input type="text" class="form-control" id="mobile" name= "mobile" readonly>
+		    </div>
+		    <div class="form-group col-md-4">
+		      <label for="inputPassword4">Email</label>
+		      <input type="text" class="form-control" id="email" name = "email" readonly>
+		    </div>
+		  </div>
+		  
+		  <div>
+		  <center><button type="submit" id="updateDetails" class="btn btn-primary">Update</button></center>
+		  </div>
+		</form>
+		</div>
+	</div>
+	
+	<div class="row">
+		<p id="result" style="color: red;"></p>
+	</div>
+	
+	<div id="footer">
+			<a href="#">homepage</a> | <a href="mailto:rishabhs201195@gmail.com">contact</a>
+			| &copy; 2019 Team 4 | Design by <a href="https://www.mosip.io/">
+				www.mosip.org</a><br /> This work is licensed under<a rel="license"
+				href="https://www.mosip.io/">Mosip </a>
+		</div>
+</div>
+<script>
+$(document).ready(function () {
+//     $(window).load(function (event) {
+        //stop submit the form, we will post it manually.
+        var uin = localStorage.getItem('uid');
+        var requestURL="http://localhost:51310//mosip/core/v1.0/api/resident?uin="+uin;
+                
+        // Get form
+       // var uin = $('#VIN_FORM')[0];
+        
+		// Create an FormData object 
+        //var data = new FormData(form);
+        console.log("VIN_SUBMIT Called :: uin "+uin);
+        console.log("Invoking URL :: "+requestURL);
+		// If you want to add an extra field for the FormData
+       // data.append("CustomField", "This is some extra data, testing");
+		// disabled the submit button
+        $.ajax({
+            type: "GET",
+           // enctype: 'application/json',
+            url: requestURL,
+            //data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+            	console.log("Response From API  :: data "+data);
+            	if(data.status==="OK"){
+            		  $("#uin").val(data.resident.uin);
+            		  $("#name").val(data.resident.name);
+            		  $("#father_name").val(data.resident.father_name);
+            		  $("#dob").val(data.resident.dob);
+            		  $("#house_no").val(data.resident.house_no);
+            		  $("#street").val(data.resident.street);
+            		  $("#city").val(data.resident.city);
+            		  $("#dist").val(data.resident.dist);
+            		  $("#state").val(data.resident.state);
+            		  $("#country").val(data.resident.country);
+            		  $("#mobile").val(data.resident.mobile);
+            		  $("#email").val(data.resident.email);
+            		  
+                      console.log("SUCCESS : ", data.message+" vin "+data.vin);
+                      
+            	}else{
+            		  $("#name").val("");
+                      console.log("SUCCESS : ", data.message+" vin "+data.vin);
+            	}
+              
+            },
+            error: function (e) {
+//                 $("#result").text(e.responseText);
+                console.log("ERROR : ", e);
+            }
+        });
+   // });
+});
+</script>
+
+<!-- <script> 
+// $(document).ready(function () {
+//     $("#updateDetails").click(function (event) {
+//         //stop submit the form, we will post it manually.
+//         event.preventDefault();
+//         //var uin = document.getElementById("UPDATE_FORM").elements.namedItem("uin").value;
+//         var requestURL="http://localhost:51310//mosip/core/v1.0/api/uin/update";
+// //         $(link) = $(this);
+//         // Get form
+//        // var uin = $('#VIN_FORM')[0];
+        
+// 		// Create an FormData object  
+//         //var data = new FormData(form);
+//       //  console.log("VIN_OTP_SUBMIT Called :: uin "+h_uin+" sent_otp "+sent_otp+" ip_otp "+ip_otp);
+//         console.log("Invoking URL :: "+requestURL);
+// 		// If you want to add an extra field for the FormData
+//        // data.append("CustomField", "This is some extra data, testing");
+// 		// disabled the submit button
+//         //$("#updateDetails").prop("disabled", true);
+//         $.ajax({
+//             type: "GET",
+//            // enctype: 'application/json',
+//             url: requestURL,
+//             //data: data,
+//             processData: false,
+//             contentType: false,
+//             cache: false,
+//             timeout: 600000,
+//             success: function (data) {
+//             	console.log("Response From API  :: data "+data);
+//             	if(data.status==="OK"){
+//           		  	  $("#result").text(data.message);
+                      
+//             	}else{
+//             		  $("#result").text(data.message);
+//                       //console.log("SUCCESS : ", data.message+" vin "+data.vin);
+                      
+//             	}
+              
+//             },
+//             error: function (e) {
+//                 $("#result").text(e.responseText);
+//                 console.log("ERROR : ", e);
+//             }
+//         });
+//     });
+// });
+ </script> -->
+
+</body>
+</html>

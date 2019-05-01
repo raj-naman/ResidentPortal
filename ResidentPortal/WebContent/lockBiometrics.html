@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>*Reprint UIN Card*</title>
+<title>*Lock Biometrics*</title>
 <link href="style.css" rel="stylesheet" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -17,12 +17,12 @@
   <div id="menucontainer">
     <div id="menunav">
       <ul>
-        <li><a href="reprintUID.html" ><span>Reprint UID card</span></a></li>
+        <li><a href="reprintUID.html"><span>Reprint UID card</span></a></li>
         <li><a href="generateVIN.html"><span>Generate VIN</span></a></li>
         <li><a href="revokeVIN.html"><span>Revoke VIN</span></a></li>
-        <li><a href="lockBiometrics.html" ><span>Lock Biometrics</span></a></li>
+        <li><a href="lockBiometrics.html" class="current"><span>Lock Biometrics</span></a></li>
         <li><a href="unlockBiometrics.html"><span>Unock Biometrics</span></a></li>
-        <li><a href="updateAddress.html" class="current"><span>Update Address</span></a></li>
+        <li><a href="updateAddress.html"><span>Update Address</span></a></li>
       </ul>
     </div>
   </div>
@@ -47,7 +47,7 @@
 			</div>
 			<div id="content">
 				<h3>
-					Update <span style="color: #3484B1;"> Address</span>
+					Lock <span style="color: #3484B1;"> Biometrics</span>
 				</h3>
 
 				<form id="VIN_FORM">
@@ -68,12 +68,11 @@
 							<input type="hidden" name="hidden_uin" id="hidden_uin"></input>
 					</div>
 
-					<button type="submit" id="VIN_OTP_SUBMIT" class="btn btn-primary">Submit</button>
+					<button type="submit" id="VIN_OTP_SUBMIT" class="btn btn-primary">Lock Biometrics</button>
 				</form>
-			
-			<div class="row">
-				<p id="result" style="color: red;"></p>
-			</div>
+					<div class="row">
+							<p id="result" style="color: red;"></p>
+						</div>
 			</div>
 		</div>
 		<br></br>
@@ -148,8 +147,7 @@ $(document).ready(function () {
         var ip_otp = document.getElementById("OTP_SUBMIT").elements.namedItem("InputOTP").value;
         var sent_otp = document.getElementById("OTP_SUBMIT").elements.namedItem("sent_otp").value;
         var h_uin = document.getElementById("OTP_SUBMIT").elements.namedItem("hidden_uin").value;
-        var requestURL="http://localhost:51310//mosip/core/v1.0/api/uin/reprint/success?uin="+h_uin+"&sentOTP="+sent_otp+"&enterOTP="+ip_otp;
-//         $(link) = $(this);
+        var requestURL="http://localhost:51310//mosip/core/v1.0/api/uin/lockBiometrics?uin="+h_uin+"&sentOTP="+sent_otp+"&enterOTP="+ip_otp;
         // Get form
        // var uin = $('#VIN_FORM')[0];
         
@@ -173,14 +171,12 @@ $(document).ready(function () {
             success: function (data) {
             	console.log("Response From API  :: data "+data);
             	if(data.status==="OK"){
-          		  	//$("#result").text(data.message);
-					localStorage.setItem('uid', h_uin);
-            		window.location.href = "updateForm.html";
+            		  $("#result").text(data.biometrics_status);
                       //console.log("SUCCESS : ", data.message+" vin "+data.vin);
                       $("#VIN_OTP_SUBMIT").prop("disabled", false);
                       
             	}else{
-            		  $("#result").text(data.message);
+            		  $("#result").text(data.biometrics_status);
                       //console.log("SUCCESS : ", data.message+" vin "+data.vin);
                       $("#VIN_OTP_SUBMIT").prop("disabled", false);
             	}

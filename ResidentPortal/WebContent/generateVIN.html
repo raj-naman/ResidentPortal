@@ -27,7 +27,9 @@
 					<li><a href="generateVIN.html" class="current"><span>Generate
 								VIN</span></a></li>
 					<li><a href="revokeVIN.html"><span>Revoke VIN</span></a></li>
-					<li><a href="lockUnlockBiometric.html"><span>Lock/Unlock
+					<li><a href="lockBiometrics.html"><span>Lock
+								Biometrics</span></a></li>
+					<li><a href="unlockBiometrics.html"><span>Unock
 								Biometrics</span></a></li>
 					<li><a href="updateAddress.html"><span>Update
 								Address</span></a></li>
@@ -69,14 +71,14 @@
 				</form>
 				<form id="OTP_SUBMIT">
 					<div class="form-group">
-						<label for="InputOTP">Password</label> <input type="text"
+						<label for="InputOTP">Enter OTP</label> <input type="text"
 							class="form-control" id="InputOTP"
 							placeholder="Enter OTP">
 							<input type="hidden" name="sent_otp" id="sent_otp"></input>
 							<input type="hidden" name="hidden_uin" id="hidden_uin"></input>
 					</div>
 
-					<button type="submit" id="VIN_OTP_SUBMIT" class="btn btn-primary">Submit</button>
+					<button type="submit" id="VIN_OTP_SUBMIT" class="btn btn-primary">Generate VIN</button>
 				</form>
 					<div class="row">
 							<p id="result" style="color: red;"></p>
@@ -86,9 +88,9 @@
 		<br></br>
 		<div id="footer">
 			<a href="#">homepage</a> | <a href="mailto:rishabhs201195@gmail.com">contact</a>
-			| &copy; 2019 Team 4 | Design by <a href="http://www.mitchinson.net">
+			| &copy; 2019 Team 4 | Design by <a href="https://www.mosip.io/">
 				www.mosip.org</a><br /> This work is licensed under<a rel="license"
-				href="http://creativecommons.org/licenses/by/3.0/">Mosip </a>
+				href="https://www.mosip.io/">Mosip </a>
 		</div>
 	</div>
 	
@@ -99,7 +101,7 @@ $(document).ready(function () {
         //stop submit the form, we will post it manually.
         event.preventDefault();
         var uin = document.getElementById("VIN_FORM").elements.namedItem("uin_val").value;
-        var requestURL="http://localhost:51310//mosip/core/v1.0/api/vin/generate/sendOTP?uin="+uin;
+        var requestURL="http://localhost:51310//mosip/core/v1.0/api/generate/otp?uin="+uin;
         // Get form
        // var uin = $('#VIN_FORM')[0];
         
@@ -159,7 +161,7 @@ $(document).ready(function () {
         // Get form
        // var uin = $('#VIN_FORM')[0];
         
-		// Create an FormData object 
+		// Create an FormData object  
         //var data = new FormData(form);
         console.log("VIN_OTP_SUBMIT Called :: uin "+h_uin+" sent_otp "+sent_otp+" ip_otp "+ip_otp);
         console.log("Invoking URL :: "+requestURL);
