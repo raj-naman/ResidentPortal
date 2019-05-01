@@ -1,2 +1,2 @@
 # ResidentPortal
-Resident Portal for Mosip mm
+Resident Portal for Mosip 
